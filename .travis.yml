@@ -30,7 +30,6 @@ before_script:
 script: 
   - travis_retry docker run -e TRAVIS_JOB_ID -t -d -w $PHPSQLDIR --name=client --link $TEST_PHP_SQL_SERVER msphpsql-dev
   - docker ps -a
-  - docker stats -a
   - docker logs client
   - travis_retry docker exec client python ./test/functional/setup/setup_dbs.py -dbname $SQLSRV_DBNAME
   - travis_retry docker exec client python ./test/functional/setup/setup_dbs.py -dbname $PDOSQLSRV_DBNAME
@@ -43,8 +42,10 @@ script:
   - docker exec client python ./test/functional/setup/cleanup_dbs.py -dbname $SQLSRV_DBNAME
   - docker exec client python ./test/functional/setup/cleanup_dbs.py -dbname $PDOSQLSRV_DBNAME
   - docker exec client coveralls -e ./source/shared/ --gcov-options '\-lp'
+  - docker stats
   - docker stop client
-  - docker ps -a 
+  - docker ps -a
+
 
 
 notifications:
